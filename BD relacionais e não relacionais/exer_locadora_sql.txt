@@ -1,0 +1,227 @@
+﻿DROP TABLE Locacao;
+DROP TABLE Cliente;
+DROP TABLE Filme;
+DROP TABLE Preco;
+DROP TABLE Genero;
+
+
+Create table cliente
+(  codcliente number(10) not null,
+   nome varchar2(50) not null,
+   endereco varchar2(50) null,
+   bairro varchar2(50) null,
+   cidade varchar2(50) null,
+   estado char(2) null,
+   Constraint pk_cliente primary Key(codcliente)
+);
+
+
+Create table Locacao
+(  codcliente number(10) not null,
+   data date not null,
+   codfilme number(3) not null,
+   datadevolucao date null,
+   Constraint pk_locacao primary Key(codcliente, data, codfilme)
+);
+   
+Create table filme
+(  
+   codfilme number(3) not null,
+   nome varchar2(50) not null,
+   cor char(50) not null,
+   status char(1) not null,
+   codgenero number(3) not null,
+   Constraint pk_filme primary Key(codfilme)
+);
+   
+Create table preco
+(  
+   cor char(50) not null,
+   valor number(10,2) not null,
+   Constraint pk_preco primary Key(cor)
+);
+   
+Create table genero
+(  
+   codgenero number(3) not null,
+   descricao varchar(20) not null,
+   Constraint pk_genero primary Key(codgenero)
+);
+   
+   
+Alter table Locacao ADD constraint FK_cliente_locacao foreign key (codcliente) references cliente (codcliente);
+Alter table locacao ADD constraint FK_locacao_filme foreign key (codfilme) references filme (codfilme);
+Alter table filme ADD constraint fk_filme_preco foreign key (cor) references preco (cor);
+Alter table filme ADD constraint fk_filme_genero foreign key (codgenero) references genero (codgenero);
+
+
+INSERT INTO PRECO (COR, VALOR) 
+VALUES 
+  ('VERMELHO', '13');
+
+
+
+
+INSERT INTO PRECO (COR, VALOR) 
+VALUES 
+  ('VERDE', '10');
+
+
+
+
+INSERT INTO GENERO (CODGENERO, DESCRICAO) 
+VALUES 
+  ('1', 'COMÉDIA');
+
+
+
+
+INSERT INTO GENERO (CODGENERO, DESCRICAO) 
+VALUES 
+  ('2', 'AVENTURA');
+
+
+
+
+INSERT INTO FILME (
+  CODFILME, COR, CODGENERO, NOME, STATUS
+) 
+VALUES 
+  (
+    '1', 'VERMELHO', '1', 'EL HOYO (2018)', 
+    'D'
+  );
+
+
+
+
+INSERT INTO FILME (
+  CODFILME, COR, CODGENERO, NOME, STATUS
+) 
+VALUES 
+  (
+    '2', 'VERMELHO', '1', 'JOKER (2019)', 
+    'L'
+  );
+
+
+
+
+INSERT INTO FILME (
+  CODFILME, COR, CODGENERO, NOME, STATUS
+) 
+VALUES 
+  (
+    '3', 'VERDE', '2', 'PARASITA (2019)', 
+    'D'
+  );
+
+
+
+
+INSERT INTO CLIENTE (
+  CODCLIENTE, NOME, ENDERECO, BAIRRO, 
+  CIDADE, ESTADO
+) 
+VALUES 
+  (
+    '1', 'HENRIQUE', 'RUA 1', 'BAIRRO 1', 
+    'CIDADE 1', 'MG'
+  );
+
+
+
+
+INSERT INTO CLIENTE (
+  CODCLIENTE, NOME, ENDERECO, BAIRRO, 
+  CIDADE, ESTADO
+) 
+VALUES 
+  (
+    '2', 'RAPHA', 'RUA 2', 'BAIRRO 2', 
+    'CIDADE 2', 'RJ'
+  );
+
+
+
+
+INSERT INTO LOCACAO (
+  DATA, CODCLIENTE, CODFILME, DATADEVOLUCAO
+) 
+VALUES 
+  (DATE '2020-03-20', '1', '2', NULL);
+
+
+
+
+INSERT INTO LOCACAO (
+  DATA, CODCLIENTE, CODFILME, DATADEVOLUCAO
+) 
+VALUES 
+  (DATE '2020-03-15', '2', '3', NULL);
+
+
+   
+Consultas:
+
+
+1)Exibir  o  nome  dos  filmes,  a  descrição  de  seu gênero,  mas  somente para os filmes que estão disponíveis (status 'D').
+
+
+select nome
+from filme
+where status like 'D'
+
+
+2)  Exibir  o  nome  dos  filmes,  seu  código,  e  sua  data  de  locação,  mas somente para os filmes que ainda não foram devolvidos.
+
+
+select f.nome, f.codfilme, l.data
+from filme f, locacao l
+where f.status like 'L'
+
+
+3) Exibir o código, nome e preço dos filmes do gênero ‘Aventura’.
+
+
+select f.codfilme, f.nome, p.valor
+from filme f, preco p
+where f.codgenero = (select codgenero from genero where descricao like 'AVENTURA')
+
+
+4) Exibir o código e nome dos filmes de comédia alugadas por clientes do Rio de Janeiro. Exibir também o nome e código desses clientes. 
+
+
+select f.codfilme, f.nome, c.codcliente, c.nome
+from cliente c
+inner join locacao l on c.codcliente = l.codcliente
+inner join filme f on l.codfilme = f.codfilme
+inner join genero g on f.codgenero = g.codgenero
+where g.descricao = 'AVENTURA'
+
+
+5) Exibir o código e nome dos filmes que possuem a mesma cor do filme 230.
+select f.codfilme, f.nome
+from filme f
+where f.cor = (select cor from filme where codfilme  = 230)
+
+
+6) Exibir o código e nome dos clientes que moram no mesmo estado dos clientes que alugaram filme no mês de outubro.
+select c.codcliente, c.nome
+from cliente c, locacao l
+where c.codcliente = l.codcliente and l.data BETWEEN '01/10/20' AND '31/10/20'
+
+
+
+
+7) Exibir o código e nome dos clientes que realizaram mais locações do que o cliente de código 100. ARRUMAR
+select c.codcliente, count(*)
+from locacao l, cliente c
+group by c.codcliente
+having count(*) = (select count(*) from cliente c inner join locacao l on c.codcliente = l.codcliente group by c.codcliente having c.codcliente = '1')
+
+
+8) Exibir  o  código  e  nome  dos  filmes  que  possuem  mesma  cor  que  os filmes de Suspense.
+select codfilme, nome
+from filme
+where cor in (select f.cor from filme f, genero g where g.descricao = 'AVENTURA')
