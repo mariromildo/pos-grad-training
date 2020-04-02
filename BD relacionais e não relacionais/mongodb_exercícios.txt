@@ -1,0 +1,31 @@
+## No prompt de comando
+cd ..
+cd "C:\Program Files\MongoDB\Server\4.2\bin"
+mongoimport -d exercicio -c drivers --type csv --headerline --file C:\Users\HP\Downloads\drivers.csv
+mongoimport -d exercicio -c timesheet --type csv --headerline --file C:\Users\HP\Downloads\timesheet.csv
+mongoimport -d exercicio -c truck --type csv --headerline --file C:\Users\HP\Downloads\truck_event_text_partition.csv
+
+# Inicializando mongo
+mongo
+
+show dbs
+use exercicio
+
+## Retorne o nome da rota realizadas que houve eventos de "overspeed"
+db.truck.find({"eventType":"Overspeed"},{"routeName":1, "_id":0}).pretty()
+
+## Retorne o ID dos caminhões e dos motoristas e o ssn dos motoristas com evento de "overspeed"
+ db.truck.aggregate([ { $lookup:{ from: "drivers", localField: "driverId", foreignField: "driverId", as: "driver"  } }, { $match:{ "eventType":"Overspeed" } }, { $project:{ "truckId":1, "driverId":1, "driver.ssn":1, "_id":0 } } ]).pretty()  
+
+## Faça uma consulta que exiba todos os eventos cometidos pelo motorista diferente de "Normal". Mostre as informações com "ID", "name" e "ssn" dos motoristas.
+db.truck.find({"eventType": {"$ne": "Normal"}}, {"eventType":1}).count() # Todos os eventos
+
+db.truck.distinct("eventType", {"eventType: {"$ne": "Normal"}}) # Possíveis eventos distintos, diferente de Normal
+
+db.truck.aggregate([{$lookup: {from: "drivers", localField: "driverId", foreignField: "driverId", as: "driver"}}, 
+{$match: {"eventType": {$ne: "Normal"}}},
+{$project: {"eventType":1, "driverId":1, "driver.ssn":1, "driver.name":1, "_id":0}}]).pretty()
+
+# Procure na collection drivers, com campo local X e campo estrangeiro Y, e chame-a de driver.
+# Satisfazendo as condições XYZ
+# Retorne os campos 1, 2, 3
