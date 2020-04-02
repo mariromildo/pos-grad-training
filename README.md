@@ -2,7 +2,7 @@
 
 Materiais e aulas práticas da pós graduação em Ciência de dados e Big Data da PUC-MG.
 
-###  1) Banco de dados relacionais e não relacionais [repositório](https://github.com/mariromildo/pos-grad-training/tree/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais):
+###  [1) Banco de dados relacionais e não relacionais](https://github.com/mariromildo/pos-grad-training/tree/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais):
 #### 1.1 Banco de dados relacional
   Teoria, [exemplos ](https://github.com/mariromildo/pos-grad-training/blob/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais/modelo_relacional.sql) e [exercícios](https://github.com/mariromildo/pos-grad-training/blob/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais/exer_locadora_sql.txt) utilizando SQL no Oracle APEX.
 
