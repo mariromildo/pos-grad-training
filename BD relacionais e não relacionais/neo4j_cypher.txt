@@ -1,0 +1,42 @@
+# Neo4j
+# Deleta todo o banco de dados
+MATCH (n) OPTIONAL MATCH (n)-[rel]-() 
+DELETE rel, n
+
+# Leitura dos dados
+LOAD CSV WITH HEADERS FROM "file:///products.csv" AS row
+CREATE (n:Product)
+SET n=row,
+n.unitPrice = toFloat(row.unitPrice),
+n.unitInStock = toInteger(row.unitInStock),n.unitsOnOrder=toInteger(row.unitsOnOrder),
+n.reorderLevel = toInteger(row.reorderLevel),n.discontinued = (row.discontinued <> "0") 
+
+LOAD CSV WITH HEADERS FROM "file:///categories.csv" AS row
+CREATE (n:Category)
+SET n = row
+
+LOAD CSV WITH HEADERS FROM "file:///suppliers.csv" AS row
+CREATE (n:Supplier)
+SET n = row
+
+# Criação de indices para facilitar consultas
+CREATE INDEX ON : Product(productId)
+CREATE INDEX ON : Category(categoryId)
+CREATE INDEX ON : Supplier(supplierId)
+
+# Criação de relacionamentos
+MATCH (p:Product),(c:Category)
+WHERE p.categoryID = c.categoryID
+CREATE (p)-[:PART_OF]->(c)
+
+MATCH (p:Product),(s:Supplier)
+WHERE p.supplierID = s.supplierID
+CREATE (s)-[:SUPPLIES]->(p)
+
+# Retorna as categorias de cada suppliers
+MATCH (s:Supplier)-->(:Product)-->(c:Category)
+RETURN s.companyName as Company, collect(distinct c.categoryName) as 
+
+# Consulta do supplier de cada produto
+MATCH (c:Category {categoryName:"Produce"})<--(:Product)<--(s:Supplier)
+RETURN DISTINCT s.companyName as ProduceSuppliers
