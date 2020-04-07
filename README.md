@@ -14,4 +14,4 @@ Materiais e aulas práticas da pós graduação em Ciência de dados e Big Data 
   [Exercício](https://github.com/mariromildo/pos-grad-training/blob/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais/mongodb_exerc%C3%ADcios.txt) com [banco de dados de motoristas](https://raw.githubusercontent.com/hortonworks/data-tutorials/master/tutorials/hdp/beginners-guide-to-apache-pig/assets/driver_data.zip).
 
 #### 1.4 Banco de dados de grafos
-  A completar.
+  Teoria, [aplicação](https://github.com/mariromildo/pos-grad-training/blob/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais/neo4j_cypher.txt) no Neo4j, [exercício](https://github.com/mariromildo/pos-grad-training/blob/master/BD%20relacionais%20e%20n%C3%A3o%20relacionais/exerc%C3%ADcio_filmes_neo4j.txt) no Neo4j usando a linguagem Cypher.
